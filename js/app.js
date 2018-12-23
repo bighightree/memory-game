@@ -1,7 +1,28 @@
+let cardsArray;
 /*
  * 创建一个包含所有卡片的数组
  */
+function resetCardsArray() {
+    cardsArray = shuffle(["gem", "gem",
+        "paper-plane", "paper-plane",
+        "anchor", "anchor",
+        "bolt", "bolt",
+        "cube", "cube",
+        "leaf", "leaf",
+        "bicycle", "bicycle",
+        "bomb", "bomb"
+    ]);
+}
 
+function resetCards() {
+    resetCardsArray();
+    const deck = document.querySelector('.deck');
+    const cards = deck.getElementsByClassName('fa');
+    for (let i = 0; i < cards.length; i++) {
+        let card = cards[i];
+        card.classList.add(`fa-${cardsArray[i]}`);
+    }
+}
 
 /*
  * 显示页面上的卡片
@@ -36,3 +57,7 @@ function shuffle(array) {
  *    + 增加移动计数器并将其显示在页面上（将这个功能放在你从这个函数中调用的另一个函数中）
  *    + 如果所有卡都匹配，则显示带有最终分数的消息（将这个功能放在你从这个函数中调用的另一个函数中）
  */
+
+
+
+ resetCards();
