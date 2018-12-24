@@ -6,6 +6,8 @@ let moves;
 let moveCount = 0;
 let stars;
 let starPanel;
+let starCount = 3;
+let restartBtn;
 /*
  * 创建一个包含所有卡片的数组
  */
@@ -23,10 +25,16 @@ function resetCardsArray() {
 
 function resetCards() {
     resetCardsArray();
-    const cards = deck.getElementsByClassName('fa');
+    const cards = deck.getElementsByClassName('card');
     for (let i = 0; i < cards.length; i++) {
         let card = cards[i];
-        card.classList.add(`fa-${cardsArray[i]}`);
+        card.className = "card";
+    }
+    const icons = deck.getElementsByClassName('fa');
+    for (let i = 0; i < icons.length; i++) {
+        let icon = icons[i];
+        icon.className = "fa";
+        icon.classList.add(`fa-${cardsArray[i]}`);
     }
 }
 
@@ -69,7 +77,9 @@ function respondToCardClick(event) {
         case 1:
             let card = event.target;
             // if the card clicked on is already open
-            if (openArray.indexOf(card) >= 0) break;
+            if (card.classList.contains('open') ||
+             card.classList.contains('show') ||
+             card.classList.contains('match')) break;
             // if the target is not a card(<li>)
             if (card.nodeName != "LI") break;
             card.classList.add('open', 'show');
@@ -78,11 +88,16 @@ function respondToCardClick(event) {
             if (openArray.length > 1) {
                 if (card.firstElementChild.className === openArray[0].firstElementChild.className) {
                     // two cards match
-                    console.log("two cards match");
                     match++;
+                    console.log("two cards match. match " + match);
                     openArray[0].classList.add('match');
                     openArray[1].classList.add('match');
                     clearOpenState();
+                    if (match === 8) {
+                        if (window.confirm("Congratulations! You Won!\nWith " + moves.textContent + " Moves and " + starCount + " Stars.\nWoooooo!")) {
+                            reset();
+                        }
+                    }
                 } else {
                     // two cards don't match
                     console.log("two cards don't match!");
@@ -128,22 +143,41 @@ function updateMoves() {
             stars[0].className = "fa fa-star";
             stars[1].className = "fa fa-star";
             stars[2].className = "far fa-star";
+            starCount = 2;
             break;
         // count: 23-27, 2 stars
         case 28:
             stars[0].className = "fa fa-star";
             stars[1].className = "far fa-star";
             stars[2].className = "far fa-star";
+            starCount = 1;
             break;
         // count: 28-31, 1 star
         case 32:
             stars[0].className = "far fa-star";
             stars[1].className = "far fa-star";
             stars[2].className = "far fa-star";
+            starCount = 0;
             break;
         // count >= 32, 0 star
         default:
             break;
+    }
+}
+
+// reset 
+function reset() {
+    openArray = [];
+    match = 0;
+    starCount = 3;
+    resetMoves();
+    resetCards();
+}
+
+function restart() {
+    console.log("restart");
+    if (window.confirm("Are you sure to restart?")) {
+        reset();
     }
 }
 
@@ -153,9 +187,10 @@ function init() {
     deck = document.querySelector('.deck');
     starPanel = document.querySelector('.stars');
     stars = starPanel.getElementsByTagName('i');
-    resetMoves();
-    resetCards();
+    restartBtn = document.querySelector('.restart');
+    reset();
     deck.addEventListener('click', respondToCardClick);
+    restartBtn.addEventListener('click', restart);
 }
 
 init();
