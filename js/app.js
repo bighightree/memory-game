@@ -2,6 +2,10 @@ let cardsArray;
 let openArray = [];
 let match = 0;
 let deck;
+let moves;
+let moveCount = 0;
+let stars;
+let starPanel;
 /*
  * 创建一个包含所有卡片的数组
  */
@@ -19,7 +23,6 @@ function resetCardsArray() {
 
 function resetCards() {
     resetCardsArray();
-    deck = document.querySelector('.deck');
     const cards = deck.getElementsByClassName('fa');
     for (let i = 0; i < cards.length; i++) {
         let card = cards[i];
@@ -71,6 +74,7 @@ function respondToCardClick(event) {
             if (card.nodeName != "LI") break;
             card.classList.add('open', 'show');
             openArray.push(card);
+            updateMoves();
             if (openArray.length > 1) {
                 if (card.firstElementChild.className === openArray[0].firstElementChild.className) {
                     // two cards match
@@ -106,5 +110,52 @@ function clearOpenState() {
     openArray = [];
 }
 
-resetCards();
-deck.addEventListener('click', respondToCardClick);
+// reset moves
+function resetMoves() {
+    moves.textContent = 0;
+    moveCount = 0;
+    console.log(stars);
+    stars[0].className = "fa fa-star";
+    stars[1].className = "fa fa-star";
+    stars[2].className = "fa fa-star";
+}
+
+function updateMoves() {
+    moves.textContent = ++moveCount;
+    switch (moveCount) {
+        // count: 1-22, 3 stars
+        case 23:
+            stars[0].className = "fa fa-star";
+            stars[1].className = "fa fa-star";
+            stars[2].className = "far fa-star";
+            break;
+        // count: 23-27, 2 stars
+        case 28:
+            stars[0].className = "fa fa-star";
+            stars[1].className = "far fa-star";
+            stars[2].className = "far fa-star";
+            break;
+        // count: 28-31, 1 star
+        case 32:
+            stars[0].className = "far fa-star";
+            stars[1].className = "far fa-star";
+            stars[2].className = "far fa-star";
+            break;
+        // count >= 32, 0 star
+        default:
+            break;
+    }
+}
+
+// initiate all data
+function init() {
+    moves = document.querySelector('.moves');
+    deck = document.querySelector('.deck');
+    starPanel = document.querySelector('.stars');
+    stars = starPanel.getElementsByTagName('i');
+    resetMoves();
+    resetCards();
+    deck.addEventListener('click', respondToCardClick);
+}
+
+init();
