@@ -1,4 +1,7 @@
 let cardsArray;
+let openArray = [];
+let match = 0;
+let deck;
 /*
  * 创建一个包含所有卡片的数组
  */
@@ -16,7 +19,7 @@ function resetCardsArray() {
 
 function resetCards() {
     resetCardsArray();
-    const deck = document.querySelector('.deck');
+    deck = document.querySelector('.deck');
     const cards = deck.getElementsByClassName('fa');
     for (let i = 0; i < cards.length; i++) {
         let card = cards[i];
@@ -57,7 +60,51 @@ function shuffle(array) {
  *    + 增加移动计数器并将其显示在页面上（将这个功能放在你从这个函数中调用的另一个函数中）
  *    + 如果所有卡都匹配，则显示带有最终分数的消息（将这个功能放在你从这个函数中调用的另一个函数中）
  */
+function respondToCardClick(event) {
+    switch (openArray.length) {
+        case 0:
+        case 1:
+            let card = event.target;
+            // if the card clicked on is already open
+            if (openArray.indexOf(card) >= 0) break;
+            // if the target is not a card(<li>)
+            if (card.nodeName != "LI") break;
+            card.classList.add('open', 'show');
+            openArray.push(card);
+            if (openArray.length > 1) {
+                if (card.firstElementChild.className === openArray[0].firstElementChild.className) {
+                    // two cards match
+                    console.log("two cards match");
+                    match++;
+                    openArray[0].classList.add('match');
+                    openArray[1].classList.add('match');
+                    clearOpenState();
+                } else {
+                    // two cards don't match
+                    console.log("two cards don't match!");
+                    setTimeout(clearOpenState, 500);
+                }
+            }
+            break;
+        default:
+            break;
+    }
+}
 
+// remove the open state of a specific card
+function removeOpenState(card) {
+    card.classList.remove('open', 'show');
+}
 
+// clear the open state of two cards that don't match
+function clearOpenState() {
+    console.log("clear open state");
+    removeOpenState(openArray[0]);
+    removeOpenState(openArray[1]);
+    console.log(openArray[0]);
+    console.log(openArray[1]);
+    openArray = [];
+}
 
- resetCards();
+resetCards();
+deck.addEventListener('click', respondToCardClick);
