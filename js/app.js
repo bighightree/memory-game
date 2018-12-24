@@ -8,6 +8,10 @@ let stars;
 let starPanel;
 let starCount = 3;
 let restartBtn;
+let timePanel;
+let timeCount = 0;
+let intervalID = 0;
+let timerState = false;
 /*
  * 创建一个包含所有卡片的数组
  */
@@ -94,8 +98,9 @@ function respondToCardClick(event) {
                     openArray[1].classList.add('match');
                     clearOpenState();
                     if (match === 8) {
+                        stopTimer();
                         setTimeout(() => {
-                            if (window.confirm("Congratulations! You Won!\nWith " + moves.textContent + " Moves and " + starCount + " Stars.\nWoooooo!")) {
+                            if (window.confirm("Congratulations! You Won!\nWith " + moves.textContent + " Moves, " + starCount + " Stars and  " + timeCount + " Seconds!\nWoooooo!")) {
                                 reset();
                             }
                         }, 500);
@@ -167,6 +172,32 @@ function updateMoves() {
     }
 }
 
+function resetTimer() {
+    timeCount = 0;
+    timePanel.textContent = 0;
+    if (!timerState) {
+        startTimer();
+    } else {
+        stopTimer();
+        startTimer();
+    }
+}
+
+function startTimer() {
+    intervalID = window.setInterval(timer, 1000);
+    timerState = true;
+}
+
+function stopTimer() {
+    window.clearInterval(intervalID);
+    timerState = false;
+}
+
+function timer() {
+    timeCount++;
+    timePanel.textContent = timeCount;
+}
+
 // reset 
 function reset() {
     openArray = [];
@@ -174,6 +205,7 @@ function reset() {
     starCount = 3;
     resetMoves();
     resetCards();
+    resetTimer();
 }
 
 function restart() {
@@ -190,6 +222,7 @@ function init() {
     starPanel = document.querySelector('.stars');
     stars = starPanel.getElementsByTagName('i');
     restartBtn = document.querySelector('.restart');
+    timePanel = document.querySelector('.time');
     reset();
     deck.addEventListener('click', respondToCardClick);
     restartBtn.addEventListener('click', restart);
