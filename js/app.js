@@ -84,8 +84,8 @@ function respondToCardClick(event) {
             if (card.nodeName != "LI") break;
             card.classList.add('open', 'show');
             openArray.push(card);
-            updateMoves();
             if (openArray.length > 1) {
+                updateMoves();
                 if (card.firstElementChild.className === openArray[0].firstElementChild.className) {
                     // two cards match
                     match++;
