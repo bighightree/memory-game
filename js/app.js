@@ -78,8 +78,8 @@ function respondToCardClick(event) {
             let card = event.target;
             // if the card clicked on is already open
             if (card.classList.contains('open') ||
-             card.classList.contains('show') ||
-             card.classList.contains('match')) break;
+                card.classList.contains('show') ||
+                card.classList.contains('match')) break;
             // if the target is not a card(<li>)
             if (card.nodeName != "LI") break;
             card.classList.add('open', 'show');
@@ -94,9 +94,11 @@ function respondToCardClick(event) {
                     openArray[1].classList.add('match');
                     clearOpenState();
                     if (match === 8) {
-                        if (window.confirm("Congratulations! You Won!\nWith " + moves.textContent + " Moves and " + starCount + " Stars.\nWoooooo!")) {
-                            reset();
-                        }
+                        setTimeout(() => {
+                            if (window.confirm("Congratulations! You Won!\nWith " + moves.textContent + " Moves and " + starCount + " Stars.\nWoooooo!")) {
+                                reset();
+                            }
+                        }, 500);
                     }
                 } else {
                     // two cards don't match
